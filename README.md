@@ -20,17 +20,17 @@ In order to replicate the experiment follow these steps:
 ### Getting started
 
 1. Clone the repository 
-   - `git clone https://github.com/icse18-FAST/FAST/`
+   - `git clone https://github.com/DinoSaulo/FAST-parameterized`
  
 2. Install the additional python packages required:
-   - `pip install -r requirements.txt`
+   - `pip3 install -r requirements.txt`
 
 ### Evaluate the Effectiveness and Efficiency of different test case prioritization (TCP) algorithms
 
 1. Execute the `prioritize.py` script 
-   - `python py/prioritize.py <subject> <entity> <algorithm> <repetitions>`
+   - `python3 py/prioritize.py <subject> <entity> <algorithm> <repetitions>`
    
-      Example: `python py/prioritize.py flex_v3 bbox FAST-pw 50`
+      Example: `python3 py/prioritize.py flex_v3 bbox FAST-pw 50`
       
       The possible values for `<subject>` are: flex_v3, grep_v3, gzip_v1, make_v1, sed_v6, chart_v0, closure_v0, lang_v0, math_v0, and time_v0.
  
