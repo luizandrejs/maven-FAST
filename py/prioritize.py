@@ -52,7 +52,7 @@ def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
     #    fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
     #else:
     #    fault_matrix = "input/{}_{}/fault_matrix_key_tc.pickle".format(prog, v)
-    outpath = "output/{}_{}/".format(prog, v)
+    outpath = "output/{}/".format(prog)
     ppath = outpath + "prioritized/"
 
     if name == "FAST-" + selsize.__name__[:-1]:
@@ -465,7 +465,7 @@ if __name__ == "__main__":
 
     prog = os.path.basename(os.path.normpath(projectPath))
 
-    directory = "output/{}_{}/".format(prog, v)
+    directory = "output/{}/".format(prog)
     if not os.path.exists(directory):
         os.makedirs(directory)
     directory += "prioritized/"
