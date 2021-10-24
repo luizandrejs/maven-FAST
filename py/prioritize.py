@@ -20,13 +20,16 @@ import math
 import os
 import pickle
 import sys
+import pathlib
+import shutil
+import re
+import glob
 
 import competitors
 import fast
 import metric
 
-
-usage = """USAGE: python py/prioritize.py <dataset> <entity> <algorithm> <repetitions>
+usage = """USAGE: python3 py/prioritize.py <dataset> <entity> <algorithm> <repetitions>
 OPTIONS:
   <dataset>: test suite to prioritize.
     options: flex_v3, grep_v3, gzip_v1, make_v1, sed_v6, closure_v0, lang_v0, math_v0, chart_v0, time_v0
@@ -44,11 +47,11 @@ NOTE:
 def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
     javaFlag = True if v == "v0" else False
 
-    fin = "input/{}_{}/{}-{}.txt".format(prog, v, prog, ctype)
-    if javaFlag:
-        fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
-    else:
-        fault_matrix = "input/{}_{}/fault_matrix_key_tc.pickle".format(prog, v)
+    fin = "input/{}/{}-{}.txt".format(prog, prog, ctype)
+    #if javaFlag:
+    #    fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
+    #else:
+    #    fault_matrix = "input/{}_{}/fault_matrix_key_tc.pickle".format(prog, v)
     outpath = "output/{}_{}/".format(prog, v)
     ppath = outpath + "prioritized/"
 
@@ -64,16 +67,16 @@ def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
                     stime, ptime, prioritization = fast.fast_(
                         fin, selsize, r=r, b=b, bbox=True, k=k, memory=True)
                 writePrioritization(ppath, name, ctype, run, prioritization)
-                apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                apfds.append(apfd)
+                #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
+                #apfds.append(apfd)
                 stimes.append(stime)
                 ptimes.append(ptime)
                 print("  Progress: 100%  ")
                 print("  Running time:", stime + ptime)
-                if javaFlag:
-                    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                else:
-                    print("  APFD:", apfd)
+                #if javaFlag:
+                #    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
+                #else:
+                    #print("  APFD:", apfd)
             rep = (name, stimes, ptimes, apfds)
             writeOutput(outpath, ctype, rep, javaFlag)
             print("")
@@ -91,22 +94,25 @@ def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
                 else:
                     stime, ptime, prioritization = fast.fast_pw(
                         fin, r, b, bbox=True, k=k, memory=True)
+                print(prioritization)
+                print('tamanho = ' + str(len(prioritization)))
                 writePrioritization(ppath, name, ctype, run, prioritization)
-                apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                apfds.append(apfd)
+                #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
+                #apfds.append(apfd)
                 stimes.append(stime)
                 ptimes.append(ptime)
                 print("  Progress: 100%  ")
                 print("  Running time:", stime + ptime)
-                if javaFlag:
-                    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                else:
-                    print("  APFD:", apfd)
+                #if javaFlag:
+                    #print("  APFD:", sum(apfds[run]) / len(apfds[run]))
+                #else:
+                    #print("  APFD:", apfd)
             rep = (name, stimes, ptimes, apfds)
             writeOutput(outpath, ctype, rep, javaFlag)
             print("")
         else:
             print(name, "already run.")
+            shutil.rmtree("{}".format(outpath))
 
     elif name == "STR":
         if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
@@ -115,16 +121,16 @@ def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
                 print(" Run", run)
                 stime, ptime, prioritization = competitors.str_(fin)
                 writePrioritization(ppath, name, ctype, run, prioritization)
-                apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                apfds.append(apfd)
+                #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
+                #apfds.append(apfd)
                 stimes.append(stime)
                 ptimes.append(ptime)
                 print("  Progress: 100%  ")
                 print("  Running time:", stime + ptime)
-                if javaFlag:
-                    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                else:
-                    print("  APFD:", apfd)
+                #if javaFlag:
+                #    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
+                #else:
+                    #print("  APFD:", apfd)
             rep = (name, stimes, ptimes, apfds)
             writeOutput(outpath, ctype, rep, javaFlag)
             print("")
@@ -138,16 +144,16 @@ def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
                 print(" Run", run)
                 stime, ptime, prioritization = competitors.i_tsd(fin)
                 writePrioritization(ppath, name, ctype, run, prioritization)
-                apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                apfds.append(apfd)
+                #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
+                #apfds.append(apfd)
                 stimes.append(stime)
                 ptimes.append(ptime)
                 print("  Progress: 100%  ")
                 print("  Running time:", stime + ptime)
-                if javaFlag:
-                    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                else:
-                    print("  APFD:", apfd)
+                #if javaFlag:
+                #    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
+                #else:
+                    #print("  APFD:", apfd)
             rep = (name, stimes, ptimes, apfds)
             writeOutput(outpath, ctype, rep, javaFlag)
             print("")
@@ -378,24 +384,66 @@ def writeOutput(outpath, ctype, res, javaFlag):
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+def codeFormat(code):
+
+    return re.compile(r"\s+").sub(" ", code).strip()
+
+def getLanguagae(filePath):
+
+    return pathlib.PurePosixPath(filePath).suffix
+
+def openAndWriteInFile(fileName, append_write, code):
+    f = open(fileName, append_write)
+    f.write(code)
+    f.close()
+
+def parameterizer(filePath):
+
+    projectName = os.path.basename(os.path.normpath(filePath))
+
+    inputFolderPath = 'input/{}'.format(projectName)
+
+    if not os.path.exists(inputFolderPath):
+        os.makedirs(inputFolderPath)
+
+    fileName = "{}/{}-bbox.txt".format(inputFolderPath, projectName)
+        
+    arr = os.listdir(filePath)
+
+    arr = glob.glob(filePath + "/**/*Test*.java", recursive = True)
+
+    for fileTest in arr:
+
+        if "Test" in fileTest:
+
+            f = open(fileTest, "r")
+
+            code = codeFormat(f.read()) + '\n'
+
+            if os.path.exists(fileName):
+                append_write = 'a' # append if already exists
+            else:
+                append_write = 'w' # make a new file if not
+            
+            openAndWriteInFile(fileName, append_write, code)
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
         print("Wrong input.")
         print(usage)
         exit()
-    prog_v, entity, algname, repeats = sys.argv[1:]
+    projectPath, entity, algname, repeats = sys.argv[1:]
 
     repeats = int(repeats)
     algnames = {"FAST-pw", "FAST-one", "FAST-log", "FAST-sqrt", "FAST-all",
                 "STR", "I-TSD",
                 "ART-D", "ART-F", "GT", "GA", "GA-S"}
-    prog_vs = {"flex_v3", "grep_v3", "gzip_v1", "make_v1", "sed_v6",
-               "closure_v0", "lang_v0", "math_v0", "chart_v0", "time_v0"}
     entities = {"bbox", "function", "branch", "line"}
 
-    if prog_v not in prog_vs:
-        print("<dataset> input incorrect.")
+    if not os.path.exists(projectPath): 
+        print("<projectPath> input incorrect or not exists.")
         print(usage)
         exit()
     elif entity not in entities:
@@ -411,7 +459,11 @@ if __name__ == "__main__":
         print(usage)
         exit()
 
-    prog, v = prog_v.split("_")
+    parameterizer(projectPath)     
+
+    v = 'v0'
+
+    prog = os.path.basename(os.path.normpath(projectPath))
 
     directory = "output/{}_{}/".format(prog, v)
     if not os.path.exists(directory):
