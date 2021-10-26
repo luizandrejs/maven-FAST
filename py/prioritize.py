@@ -42,15 +42,17 @@ NOTE:
   ART-D, ART-F, GT, GA, GA-S are WB prioritization only."""
 
 
-def bboxPrioritization(name, prog, v, ctype, k, n, r, b, repeats, selsize):
+def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize):
     javaFlag = True if v == "v0" else False
 
-    fin = "input/{}/{}-{}.txt".format(prog, prog, ctype)
+    prog = os.path.basename(os.path.normpath(projectPath))
+
+    fin = "{}/.fast/input/{}-{}.txt".format(projectPath, prog, ctype)
     #if javaFlag:
     #    fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
     #else:
     #    fault_matrix = "input/{}_{}/fault_matrix_key_tc.pickle".format(prog, v)
-    outpath = "output/{}/".format(prog)
+    outpath = "{}/.fast/output/".format(projectPath)
     ppath = outpath + "prioritized/"
 
     if name == "FAST-" + selsize.__name__[:-1]:
@@ -394,36 +396,43 @@ def openAndWriteInFile(fileName, append_write, code):
     f.write(code)
     f.close()
 
+def createFolderIfNotExists(folderPath):
+    if not os.path.exists(folderPath):
+        os.makedirs(folderPath)
+
+def createFastPath(projectPath):
+    fastPath = projectPath+"/.fast"
+
+    if not os.path.exists(fastPath):
+        os.makedirs(fastPath)
+
+    return fastPath
+
 def parameterizer(filePath):
 
     projectName = os.path.basename(os.path.normpath(filePath))
 
-    inputFolderPath = 'input/{}'.format(projectName)
-
-    if not os.path.exists(inputFolderPath):
-        os.makedirs(inputFolderPath)
+    inputFolderPath = '{}/.fast/input'.format(filePath)
+    
+    createFolderIfNotExists(inputFolderPath)
 
     fileName = "{}/{}-bbox.txt".format(inputFolderPath, projectName)
         
-    arr = os.listdir(filePath)
-
-    arr = glob.glob(filePath + "/**/*Test*.java", recursive = True)
+    arr = glob.glob(filePath + "/**/*Test.java", recursive = True)
 
     for fileTest in arr:
 
-        if "Test" in fileTest:
+        f = open(fileTest, "r")
 
-            f = open(fileTest, "r")
+        code = codeFormat(f.read()) + '\n'
 
-            code = codeFormat(f.read()) + '\n'
-
-            if os.path.exists(fileName):
-                append_write = 'a' # append if already exists
-            else:
-                append_write = 'w' # make a new file if not
-            
-            openAndWriteInFile(fileName, append_write, code)
-
+        if os.path.exists(fileName):
+            append_write = 'a' # append if already exists
+        else:
+            append_write = 'w' # make a new file if not
+        
+        openAndWriteInFile(fileName, append_write, code)
+    
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 if __name__ == "__main__":
@@ -458,18 +467,15 @@ if __name__ == "__main__":
         print(usage)
         exit()
 
+    fastPath = createFastPath(projectPath)
     parameterizer(projectPath)     
 
     v = 'v0'
 
-    prog = os.path.basename(os.path.normpath(projectPath))
-
-    directory = "output/{}/".format(prog)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    directory = "{}/.fast/output/".format(projectPath)
+    createFolderIfNotExists(directory)
     directory += "prioritized/"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    createFolderIfNotExists(directory)
 
     # FAST parameters
     k, n, r, b = 5, 10, 1, 10
@@ -492,6 +498,7 @@ if __name__ == "__main__":
         selsize = pw
 
     if entity == "bbox":
-        bboxPrioritization(algname, prog, v, entity, k, n, r, b, repeats, selsize)
+        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
     else:
+        prog = os.path.basename(os.path.normpath(projectPath))
         wboxPrioritization(algname, prog, v, entity, n, r, b, repeats, selsize)
