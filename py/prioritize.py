@@ -29,12 +29,10 @@ import competitors
 import fast
 import metric
 
-usage = """USAGE: python3 py/prioritize.py <projectPath> <entity> <algorithm> <repetitions>
+usage = """USAGE: python3 py/prioritize.py <projectPath> <algorithm> <repetitions>
 OPTIONS:
   <dataset>: project with test suite to prioritize.
     exemples: '../my-projects/calculator', 'C:/users/user/projects/my-system'
-  <entity>: BB or WB (function, branch, line) prioritization.
-    options: bbox, function, branch, line
   <algorithm>: algorithm used for prioritization.
     options: FAST-pw, FAST-one, FAST-log, FAST-sqrt, FAST-all, STR, I-TSD, ART-D, ART-F, GT, GA, GA-S
   <repetitions>: number of prioritization to compute.
@@ -430,11 +428,13 @@ def parameterizer(filePath):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 if __name__ == "__main__":
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 4:
         print("Wrong input.")
         print(usage)
         exit()
-    projectPath, entity, algname, repeats = sys.argv[1:]
+    projectPath, algname, repeats = sys.argv[1:]
+
+    entity = 'bbox'
 
     repeats = int(repeats)
     algnames = {"FAST-pw", "FAST-one", "FAST-log", "FAST-sqrt", "FAST-all",
