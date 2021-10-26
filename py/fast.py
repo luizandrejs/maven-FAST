@@ -125,7 +125,8 @@ def fast_pw(input_file, r, b, bbox=False, k=5, memory=False, B=0):
     else:
         # loading input file and generating minhashes signatures
         sigfile = input_file.replace(".txt", ".sig")
-        sigtimefile = "{}_sigtime.txt".format(input_file.split(".")[0])
+        input_file_wo_ext = input_file[0:-4]
+        sigtimefile = "{}_sigtime.txt".format(input_file_wo_ext)
         if not os.path.exists(sigfile):
             mh_t = time.perf_counter()
             storeSignatures(input_file, sigfile, hashes, bbox, k)
