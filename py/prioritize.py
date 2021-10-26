@@ -365,11 +365,10 @@ def writeOutput(outpath, ctype, res, javaFlag):
         name, stimes, ptimes, apfds = res
         fileout = "{}/{}-{}.tsv".format(outpath, name, ctype)
         with open(fileout, "w") as fout:
-            fout.write("SignatureTime\tPrioritizationTime\tAPFD\n")
-            for st, pt, apfdlist in zip(stimes, ptimes, apfds):
-                for apfd in apfdlist:
-                    tsvLine = "{}\t{}\t{}\n".format(st, pt, apfd)
-                    fout.write(tsvLine)
+            fout.write("SignatureTime\t\tPrioritizationTime\t\t\n")
+            for st, pt in zip(stimes, ptimes):
+                tsvLine = "{}\t{}\t\n".format(st, pt)
+                fout.write(tsvLine)
     else:
         name, stimes, ptimes, apfds = res
         fileout = "{}/{}-{}.tsv".format(outpath, name, ctype)
