@@ -400,11 +400,20 @@ def createFolderIfNotExists(folderPath):
     if not os.path.exists(folderPath):
         os.makedirs(folderPath)
 
-def createFastPath(projectPath):
-    fastPath = projectPath+"/.fast"
+def createFastPaths(projectPath):
 
-    if not os.path.exists(fastPath):
-        os.makedirs(fastPath)
+    #base path
+    fastPath = projectPath+"/.fast"
+    createFolderIfNotExists(fastPath)
+
+    #input
+    inputPath = '{}/input'.format(fastPath)
+    createFolderIfNotExists(inputPath)
+
+    #output
+    outuptPath = "{}/output".format(fastPath)
+    createFolderIfNotExists(outuptPath)
+    createFolderIfNotExists(outuptPath+'/prioritized')
 
     return fastPath
 
@@ -413,8 +422,6 @@ def parameterizer(filePath):
     projectName = os.path.basename(os.path.normpath(filePath))
 
     inputFolderPath = '{}/.fast/input'.format(filePath)
-    
-    createFolderIfNotExists(inputFolderPath)
 
     fileName = "{}/{}-bbox.txt".format(inputFolderPath, projectName)
         
@@ -467,15 +474,10 @@ if __name__ == "__main__":
         print(usage)
         exit()
 
-    fastPath = createFastPath(projectPath)
+    createFastPaths(projectPath)
     parameterizer(projectPath)     
 
     v = 'v0'
-
-    directory = "{}/.fast/output/".format(projectPath)
-    createFolderIfNotExists(directory)
-    directory += "prioritized/"
-    createFolderIfNotExists(directory)
 
     # FAST parameters
     k, n, r, b = 5, 10, 1, 10
