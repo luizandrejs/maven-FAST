@@ -45,7 +45,7 @@ NOTE:
 def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize):
     javaFlag = True if v == "v0" else False
 
-    prog = os.path.basename(os.path.normpath(projectPath))
+    prog = getProjectName(projectPath)
 
     fin = "{}/.fast/input/{}-{}.txt".format(projectPath, prog, ctype)
     #if javaFlag:
@@ -400,6 +400,9 @@ def createFolderIfNotExists(folderPath):
     if not os.path.exists(folderPath):
         os.makedirs(folderPath)
 
+def getProjectName(projectPath):
+    return os.path.basename(os.path.normpath(projectPath))
+
 def createFastPaths(projectPath):
 
     #base path
@@ -419,7 +422,7 @@ def createFastPaths(projectPath):
 
 def parameterizer(projectPath, entity):
 
-    projectName = os.path.basename(os.path.normpath(projectPath))
+    projectName = getProjectName(projectPath)
 
     fileName = "{}/.fast/input/{}-{}.txt".format(projectPath, projectName, entity)
 
@@ -500,5 +503,5 @@ if __name__ == "__main__":
     if entity == "bbox":
         bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
     else:
-        prog = os.path.basename(os.path.normpath(projectPath))
+        prog = getProjectName(projectPath)
         wboxPrioritization(algname, prog, v, entity, n, r, b, repeats, selsize)
