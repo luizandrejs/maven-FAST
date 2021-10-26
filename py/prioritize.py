@@ -417,15 +417,13 @@ def createFastPaths(projectPath):
 
     return fastPath
 
-def parameterizer(filePath):
+def parameterizer(projectPath, entity):
 
-    projectName = os.path.basename(os.path.normpath(filePath))
+    projectName = os.path.basename(os.path.normpath(projectPath))
 
-    inputFolderPath = '{}/.fast/input'.format(filePath)
+    fileName = "{}/.fast/input/{}-{}.txt".format(projectPath, projectName, entity)
 
-    fileName = "{}/{}-bbox.txt".format(inputFolderPath, projectName)
-        
-    arr = glob.glob(filePath + "/**/*Test.java", recursive = True)
+    arr = glob.glob(projectPath + "/**/*Test.java", recursive = True)
 
     for fileTest in arr:
 
@@ -437,9 +435,9 @@ def parameterizer(filePath):
             append_write = 'a' # append if already exists
         else:
             append_write = 'w' # make a new file if not
-        
+
         openAndWriteInFile(fileName, append_write, code)
-    
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 if __name__ == "__main__":
@@ -475,7 +473,7 @@ if __name__ == "__main__":
         exit()
 
     createFastPaths(projectPath)
-    parameterizer(projectPath)     
+    parameterizer(projectPath, entity)
 
     v = 'v0'
 
