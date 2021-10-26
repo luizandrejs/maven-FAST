@@ -27,18 +27,16 @@ In order to replicate the experiment follow these steps:
 
 ### Evaluate the Effectiveness and Efficiency of different test case prioritization (TCP) algorithms
 
-1. Execute the `prioritize.py` script 
-   - `python3 py/prioritize.py <subject> <entity> <algorithm> <repetitions>`
-   
-      Example: `python3 py/prioritize.py flex_v3 bbox FAST-pw 50`
-      
-      The possible values for `<subject>` are: flex_v3, grep_v3, gzip_v1, make_v1, sed_v6, chart_v0, closure_v0, lang_v0, math_v0, and time_v0.
- 
-      The possible values for `<entity>` are: function, line, and branch, for white-box approaches; and bbox, for black-box TCP.
-      
+1. Execute the `prioritize.py` script
+   - `python3 py/prioritize.py <subject> <algorithm> <repetitions>`
+
+      Example: `python3 py/prioritize.py /home/user/projects/truth bbox FAST-pw 50`
+
+      The `<subject>` is the path to the project, some examples are: '/home/user/projects/truth' or '../my-projects/calculator'
+
       The possible values for `<algorithm>` are: FAST-pw, FAST-one, FAST-log, FAST-sqrt, FAST-all, GT, GA, GA-S, ART-F, ART-D, STR, and I-TSD. Notice that while the FAST-* algorithms can be applied to both white-box and black-box TCP, GT, GA, GA-S, ART-F, and ART-D, are white-box only; STR and I-TSD are black-box only.
 
-2. View output results stored in folder `output/`
+2. View output results stored in folder `<subject>/.fast/output/`
 
 ### Evaluate the Scalability of different TCP approaches
 
