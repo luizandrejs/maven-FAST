@@ -30,7 +30,7 @@ In order to replicate the experiment follow these steps:
 1. Execute the `prioritize.py` script
    - `python3 py/prioritize.py <subject> <algorithm> <repetitions>`
 
-      Example: `python3 py/prioritize.py /home/user/projects/truth bbox FAST-pw 50`
+      Example: `python3 py/prioritize.py /home/user/projects/truth FAST-pw 50`
 
       The `<subject>` is the path to the project, some examples are: '/home/user/projects/truth' or '../my-projects/calculator'
 
