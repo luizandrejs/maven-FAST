@@ -420,11 +420,22 @@ def createFastPaths(projectPath):
 
     return fastPath
 
+def defineAppendWrite(fileName):
+
+    if os.path.exists(fileName):
+        append_write = 'a' # append if already exists
+    else:
+        append_write = 'w' # make a new file if not
+
+    return append_write
+
 def parameterizer(projectPath, entity):
 
     projectName = getProjectName(projectPath)
 
     fileName = "{}/.fast/input/{}-{}.txt".format(projectPath, projectName, entity)
+
+    indexTestFilesPaths = "{}/.fast/input/{}-indexTestFilesPaths.txt".format(projectPath, projectName)
 
     arr = glob.glob(projectPath + "/**/*Test.java", recursive = True)
 
@@ -434,12 +445,12 @@ def parameterizer(projectPath, entity):
 
         code = codeFormat(f.read()) + '\n'
 
-        if os.path.exists(fileName):
-            append_write = 'a' # append if already exists
-        else:
-            append_write = 'w' # make a new file if not
-
+        append_write = defineAppendWrite(fileName)
         openAndWriteInFile(fileName, append_write, code)
+
+        append_write = defineAppendWrite(indexTestFilesPaths)
+        testFile = os.path.dirname(os.path.abspath(fileTest)) + os.path.basename(fileTest) + '\n'
+        openAndWriteInFile(indexTestFilesPaths, append_write, testFile)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
