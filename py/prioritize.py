@@ -47,7 +47,8 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
 
     prog = getProjectName(projectPath)
 
-    fin = "{}/.fast/input/{}-{}.txt".format(projectPath, prog, ctype)
+    inpath = "{}/.fast/input/".format(projectPath)
+    fin = "{}/{}-{}.txt".format(inpath, prog, ctype)
     #if javaFlag:
     #    fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
     #else:
@@ -67,6 +68,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                     stime, ptime, prioritization = fast.fast_(
                         fin, selsize, r=r, b=b, bbox=True, k=k, memory=True)
                 writePrioritization(ppath, name, ctype, run, prioritization)
+                writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
                 #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
                 #apfds.append(apfd)
                 stimes.append(stime)
@@ -97,6 +99,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                 print(prioritization)
                 print('tamanho = ' + str(len(prioritization)))
                 writePrioritization(ppath, name, ctype, run, prioritization)
+                writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
                 #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
                 #apfds.append(apfd)
                 stimes.append(stime)
@@ -121,6 +124,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                 print(" Run", run)
                 stime, ptime, prioritization = competitors.str_(fin)
                 writePrioritization(ppath, name, ctype, run, prioritization)
+                writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
                 #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
                 #apfds.append(apfd)
                 stimes.append(stime)
@@ -144,6 +148,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                 print(" Run", run)
                 stime, ptime, prioritization = competitors.i_tsd(fin)
                 writePrioritization(ppath, name, ctype, run, prioritization)
+                writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
                 #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
                 #apfds.append(apfd)
                 stimes.append(stime)
@@ -361,6 +366,21 @@ def writePrioritization(path, name, ctype, run, prioritization):
     fout = "{}/{}-{}-{}.pickle".format(path, name, ctype, run+1)
     pickle.dump(prioritization, open(fout, "wb"))
 
+def writePrioritizationFiles(inputPath, prioritizedPath, name, ctype, run, prioritization):
+
+    projectName = getProjectName(inputPath.replace(".fast/input", ""))
+    indexTestFilesPaths = "{}/{}-indexTestFilesPaths.txt".format(inputPath, projectName)
+
+    f = open(indexTestFilesPaths, "r")
+    lines = f.readlines()
+
+    priorizationTestCases = ""
+
+    for testCaseIndex in prioritization:
+        priorizationTestCases += lines[testCaseIndex-1]
+
+    file = "{}/{}-{}-{}.txt".format(prioritizedPath, name, ctype, run+1)
+    openAndWriteInFile(file, 'w', priorizationTestCases)
 
 def writeOutput(outpath, ctype, res, javaFlag):
     if javaFlag:
