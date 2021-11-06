@@ -475,7 +475,7 @@ def parameterizer(projectPath, entity):
         openAndWriteInFile(fileName, append_write, code)
 
         append_write = defineAppendWrite(indexTestFilesPaths)
-        testFile = os.path.dirname(os.path.abspath(fileTest)) + os.path.basename(fileTest) + '\n'
+        testFile = os.path.dirname(os.path.abspath(fileTest)) + '/' + os.path.basename(fileTest) + '\n'
         openAndWriteInFile(indexTestFilesPaths, append_write, testFile)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
