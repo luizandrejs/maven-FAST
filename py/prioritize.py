@@ -475,7 +475,7 @@ def parameterizer(projectPath, entity):
         openAndWriteInFile(fileName, append_write, code)
 
         append_write = defineAppendWrite(indexTestFilesPaths)
-        testFile = os.path.dirname(os.path.abspath(fileTest)) + '/' + os.path.basename(fileTest) + '\n'
+        testFile = os.path.relpath(fileTest, projectPath) + '\n'
         openAndWriteInFile(indexTestFilesPaths, append_write, testFile)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -538,7 +538,8 @@ if __name__ == "__main__":
         selsize = pw
 
     if entity == "bbox":
-        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        print('a')
+        #bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
     else:
         prog = getProjectName(projectPath)
         wboxPrioritization(algname, prog, v, entity, n, r, b, repeats, selsize)
