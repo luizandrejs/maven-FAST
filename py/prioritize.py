@@ -457,7 +457,13 @@ def parameterizer(projectPath, entity):
 
     indexTestFilesPaths = "{}/.fast/input/{}-indexTestFilesPaths.txt".format(projectPath, projectName)
 
-    arr = glob.glob(projectPath + "/**/*Test.java", recursive = True)
+    # https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-filter-test-class-names
+    arr1 = glob.glob(projectPath + "/**/Test*.java", recursive = True)
+    arr2 = glob.glob(projectPath + "/**/*Test.java", recursive = True)
+    arr3 = glob.glob(projectPath + "/**/*Tests.java", recursive = True)
+    arr4 = glob.glob(projectPath + "/**/*TestCase.java", recursive = True)
+
+    arr = arr1 + arr2 + arr3 + arr4
 
     for fileTest in arr:
 
