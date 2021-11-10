@@ -538,8 +538,7 @@ if __name__ == "__main__":
         selsize = pw
 
     if entity == "bbox":
-        print('a')
-        #bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
     else:
         prog = getProjectName(projectPath)
         wboxPrioritization(algname, prog, v, entity, n, r, b, repeats, selsize)
