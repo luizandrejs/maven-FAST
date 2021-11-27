@@ -96,8 +96,6 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                 else:
                     stime, ptime, prioritization = fast.fast_pw(
                         fin, r, b, bbox=True, k=k, memory=True)
-                print(prioritization)
-                print('tamanho = ' + str(len(prioritization)))
                 writePrioritization(ppath, name, ctype, run, prioritization)
                 writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
                 #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
