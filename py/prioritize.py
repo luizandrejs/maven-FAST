@@ -58,62 +58,61 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
 
     if name == "FAST-" + selsize.__name__[:-1]:
         if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
-            ptimes, stimes, apfds = [], [], []
-            for run in range(repeats):
-                print(" Run", run)
-                if javaFlag:
-                    stime, ptime, prioritization = fast.fast_(
-                        fin, selsize, r=r, b=b, bbox=True, k=k, memory=False)
-                else:
-                    stime, ptime, prioritization = fast.fast_(
-                        fin, selsize, r=r, b=b, bbox=True, k=k, memory=True)
-                writePrioritization(ppath, name, ctype, run, prioritization)
-                writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
-                #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                #apfds.append(apfd)
-                stimes.append(stime)
-                ptimes.append(ptime)
-                print("  Progress: 100%  ")
-                print("  Running time:", stime + ptime)
-                #if javaFlag:
-                #    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                #else:
-                    #print("  APFD:", apfd)
-            rep = (name, stimes, ptimes, apfds)
-            writeOutput(outpath, ctype, rep, javaFlag)
-            print("")
-        else:
-            print(name, "already run.")
+            shutil.rmtree("{}".format(outpath))
+
+        ptimes, stimes, apfds = [], [], []
+        for run in range(repeats):
+            print(" Run", run)
+            if javaFlag:
+                stime, ptime, prioritization = fast.fast_(
+                    fin, selsize, r=r, b=b, bbox=True, k=k, memory=False)
+            else:
+                stime, ptime, prioritization = fast.fast_(
+                    fin, selsize, r=r, b=b, bbox=True, k=k, memory=True)
+            writePrioritization(ppath, name, ctype, run, prioritization)
+            writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
+            #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
+            #apfds.append(apfd)
+            stimes.append(stime)
+            ptimes.append(ptime)
+            print("  Progress: 100%  ")
+            print("  Running time:", stime + ptime)
+            #if javaFlag:
+            #    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
+            #else:
+                #print("  APFD:", apfd)
+        rep = (name, stimes, ptimes, apfds)
+        writeOutput(outpath, ctype, rep, javaFlag)
+        print("")
 
     elif name == "FAST-pw":
         if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
-            ptimes, stimes, apfds = [], [], []
-            for run in range(repeats):
-                print(" Run", run)
-                if javaFlag:
-                    stime, ptime, prioritization = fast.fast_pw(
-                        fin, r, b, bbox=True, k=k, memory=False)
-                else:
-                    stime, ptime, prioritization = fast.fast_pw(
-                        fin, r, b, bbox=True, k=k, memory=True)
-                writePrioritization(ppath, name, ctype, run, prioritization)
-                writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
-                #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                #apfds.append(apfd)
-                stimes.append(stime)
-                ptimes.append(ptime)
-                print("  Progress: 100%  ")
-                print("  Running time:", stime + ptime)
-                #if javaFlag:
-                    #print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                #else:
-                    #print("  APFD:", apfd)
-            rep = (name, stimes, ptimes, apfds)
-            writeOutput(outpath, ctype, rep, javaFlag)
-            print("")
-        else:
-            print(name, "already run.")
             shutil.rmtree("{}".format(outpath))
+
+        ptimes, stimes, apfds = [], [], []
+        for run in range(repeats):
+            print(" Run", run)
+            if javaFlag:
+                stime, ptime, prioritization = fast.fast_pw(
+                    fin, r, b, bbox=True, k=k, memory=False)
+            else:
+                stime, ptime, prioritization = fast.fast_pw(
+                    fin, r, b, bbox=True, k=k, memory=True)
+            writePrioritization(ppath, name, ctype, run, prioritization)
+            writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
+            #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
+            #apfds.append(apfd)
+            stimes.append(stime)
+            ptimes.append(ptime)
+            print("  Progress: 100%  ")
+            print("  Running time:", stime + ptime)
+            #if javaFlag:
+                #print("  APFD:", sum(apfds[run]) / len(apfds[run]))
+            #else:
+                #print("  APFD:", apfd)
+        rep = (name, stimes, ptimes, apfds)
+        writeOutput(outpath, ctype, rep, javaFlag)
+        print("")
 
     elif name == "STR":
         if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
