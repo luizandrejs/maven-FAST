@@ -514,44 +514,34 @@ def parameterizer(projectPath, entity):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         print("Wrong input.")
         print(usage)
         exit()
-    projectPath, algname, repeats = sys.argv[1:]
+    projectPath, algname = sys.argv[1:]
 
-    entity = 'bbox'
-
-    repeats = int(repeats)
     algnames = {"FAST-pw", "FAST-one", "FAST-log", "FAST-sqrt", "FAST-all",
                 "STR", "I-TSD",
                 "ART-D", "ART-F", "GT", "GA", "GA-S"}
     entities = {"bbox", "function", "branch", "line"}
 
-    if not os.path.exists(projectPath): 
+    if not os.path.exists(projectPath):
         print("<projectPath> input incorrect or not exists.")
-        print(usage)
-        exit()
-    elif entity not in entities:
-        print("<entity> input incorrect.")
         print(usage)
         exit()
     elif algname not in algnames:
         print("<algorithm> input incorrect.")
         print(usage)
         exit()
-    elif repeats <= 0:
-        print("<repetitions> input incorrect.")
-        print(usage)
-        exit()
-
-    createFastPaths(projectPath)
-    parameterizer(projectPath, entity)
-
-    v = 'v0'
 
     # FAST parameters
     k, n, r, b = 5, 10, 1, 10
+    v = 'v0'
+    entity = 'bbox'
+    repeats = 1
+
+    createFastPaths(projectPath)
+    parameterizer(projectPath, entity)
 
     # FAST-f sample size
     if algname == "FAST-all":
