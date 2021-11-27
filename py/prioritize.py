@@ -381,6 +381,37 @@ def writePrioritizationFiles(inputPath, prioritizedPath, name, ctype, run, prior
 
     file = "{}/{}-{}-{}.txt".format(prioritizedPath, name, ctype, run+1)
     openAndWriteInFile(file, 'w', priorizationTestCases)
+    createPriorizationFile(prioritizedPath, name, ctype, run+1)
+
+def createPriorizationFile(prioritizedPath, projectName, ctype, run):
+
+    header = '''package fast;\n\nimport org.junit.platform.runner.JUnitPlatform;\nimport org.junit.platform.suite.api.SelectClasses;\nimport org.junit.runner.RunWith;\n\n'''
+
+    midle = '''\n@RunWith(JUnitPlatform.class)\n@SelectClasses({\n'''
+
+    footer = '''})\nclass FASTPrioritizedSuite{}'''
+
+    fastTestPackage = '{}/../../../src/test/fast'.format(prioritizedPath)
+
+    createFolderIfNotExists(fastTestPackage)
+
+    f1 = open('{}/FASTPrioritizedSuite.java'.format(fastTestPackage), 'w+')
+
+    f2 = open("{}/{}-{}-{}.txt".format(prioritizedPath, projectName, ctype, run), "r")
+    lines = f2.readlines()
+    linesCopy = lines
+
+    imports = ""
+    priorizationTestCases = ""
+
+    testCaseIndex = 0
+
+    while testCaseIndex < len(lines):
+        imports += 'import ' + lines[testCaseIndex-1].replace('src/test/java/', '').replace('/','.').replace('.java',';')
+        priorizationTestCases += '\t' + linesCopy[testCaseIndex-1].split('/')[-1].replace('.java', '.class,')
+        testCaseIndex = testCaseIndex + 1
+
+    f1.write(header+imports+midle+priorizationTestCases+footer)
 
 def writeOutput(outpath, ctype, res, javaFlag):
     if javaFlag:
@@ -457,11 +488,13 @@ def parameterizer(projectPath, entity):
 
     indexTestFilesPaths = "{}/.fast/input/{}-indexTestFilesPaths.txt".format(projectPath, projectName)
 
+    baseMavenTestPath = "/src/test/java"
+
     # https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven-filter-test-class-names
-    arr1 = glob.glob(projectPath + "/**/Test*.java", recursive = True)
-    arr2 = glob.glob(projectPath + "/**/*Test.java", recursive = True)
-    arr3 = glob.glob(projectPath + "/**/*Tests.java", recursive = True)
-    arr4 = glob.glob(projectPath + "/**/*TestCase.java", recursive = True)
+    arr1 = glob.glob(projectPath + baseMavenTestPath + "/**/Test*.java", recursive = True)
+    arr2 = glob.glob(projectPath + baseMavenTestPath  + "/**/*Test.java", recursive = True)
+    arr3 = glob.glob(projectPath + baseMavenTestPath  + "/**/*Tests.java", recursive = True)
+    arr4 = glob.glob(projectPath + baseMavenTestPath  + "/**/*TestCase.java", recursive = True)
 
     arr = arr1 + arr2 + arr3 + arr4
 
