@@ -29,6 +29,8 @@ import competitors
 import fast
 import metric
 
+from tools.FASTWatchdog import checkIfFilesHaveBeenModified, checkDeletedFile
+
 usage = """USAGE: python3 py/prioritize.py <projectPath> <algorithm> <repetitions>
 OPTIONS:
   <dataset>: project with test suite to prioritize.
@@ -46,6 +48,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
     javaFlag = True if v == "v0" else False
 
     prog = getProjectName(projectPath)
+    fastPath = "{}/.fast".format(projectPath)
 
     inpath = "{}/.fast/input/".format(projectPath)
     fin = "{}/{}-{}.txt".format(inpath, prog, ctype)
@@ -58,7 +61,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
 
     if name == "FAST-" + selsize.__name__[:-1]:
         if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
-            shutil.rmtree("{}".format(outpath))
+            shutil.rmtree("{}".format(fastPath))
 
         ptimes, stimes, apfds = [], [], []
         for run in range(repeats):
@@ -86,8 +89,6 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
         print("")
 
     elif name == "FAST-pw":
-        if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
-            shutil.rmtree("{}".format(outpath))
 
         ptimes, stimes, apfds = [], [], []
         for run in range(repeats):
@@ -388,7 +389,7 @@ def createPriorizationFile(prioritizedPath, projectName, ctype, run):
 
     footer = '''})\nclass FASTPrioritizedSuite{}'''
 
-    fastTestPackage = '{}/../../../src/test/fast'.format(prioritizedPath)
+    fastTestPackage = '{}/../../../src/test/java/fast'.format(prioritizedPath)
 
     createFolderIfNotExists(fastTestPackage)
 
@@ -451,10 +452,11 @@ def createFolderIfNotExists(folderPath):
 def getProjectName(projectPath):
     return os.path.basename(os.path.normpath(projectPath))
 
-def createFastPaths(projectPath):
+def resetFastPaths(projectPath):
 
     #base path
     fastPath = projectPath+"/.fast"
+    shutil.rmtree("{}".format(fastPath))
     createFolderIfNotExists(fastPath)
 
     #input
@@ -537,9 +539,6 @@ if __name__ == "__main__":
     entity = 'bbox'
     repeats = 1
 
-    createFastPaths(projectPath)
-    parameterizer(projectPath, entity)
-
     # FAST-f sample size
     if algname == "FAST-all":
         def all_(x): return x
@@ -558,7 +557,18 @@ if __name__ == "__main__":
         selsize = pw
 
     if entity == "bbox":
-        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+
+        if checkIfFilesHaveBeenModified(projectPath):
+            resetFastPaths(projectPath)
+            parameterizer(projectPath, entity)
+            bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        elif checkDeletedFile(projectPath):
+            resetFastPaths(projectPath)
+            parameterizer(projectPath, entity)
+            bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        else:
+            print('No modifications were found in the project tests')
+
     else:
         prog = getProjectName(projectPath)
         wboxPrioritization(algname, prog, v, entity, n, r, b, repeats, selsize)
