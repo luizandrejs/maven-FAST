@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     arr = arr1 + arr2 + arr3 + arr4
 
-    if operation == 'add':
+    if operation == 'add_instrumentation_to_the_project':
         for fileTest in arr:
 
             fileTestName = fileTest.split('/')[-1].replace('.java','')
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
         createTestWatcher()
 
-    elif operation == 'remove':
+    elif operation == 'remove_instrumentation_from_the_project':
         for fileTest in arr:
 
             fileTestName = fileTest.split('/')[-1].replace('.java','')
@@ -124,5 +124,5 @@ if __name__ == "__main__":
     else:
         print('Operation not available.\n')
         print('Available operations:')
-        print('\tadd -> Adds the instrumentation needed to run the tests by displaying the run')
-        print('\tremove -> Removes the instrumentation needed to run the tests by displaying the run')
+        print('\tadd_instrumentation_to_the_project -> Adds the instrumentation needed to run the tests by displaying the run')
+        print('\tremove_instrumentation_from_the_project -> Removes the instrumentation needed to run the tests by displaying the run')
