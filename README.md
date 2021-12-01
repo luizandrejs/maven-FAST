@@ -1,6 +1,6 @@
 # FAST-parameterized
 
-This repository is a modification of the [FAST Approaches to Scalable Similarity-based Test Case Prioritization] project (https://github.com/icse18-FAST/FAST), it is based on the following publication:
+This repository is a modification of the [FAST Approaches to Scalable Similarity-based Test Case Prioritization](https://github.com/icse18-FAST/FAST) project, it is based on the following publication:
 
 > Breno Miranda, Emilio Cruciani, Roberto Verdecchia, and Antonia Bertolino. 2018. FAST Approaches to Scalable Similarity-based Test Case Prioritization. In *Proceedings of ICSE’18: 40th International Conference on Software Engineering, Gothenburg, Sweden, May 27-June 3, 2018 (ICSE’18)*, 11 pages. DOI: [10.1145/3180155.3180210](http://dx.doi.org/10.1145/3180155.3180210)
 
