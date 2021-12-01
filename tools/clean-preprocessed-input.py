@@ -17,21 +17,35 @@ along with this source.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import os
-
+import sys
 
 if __name__ == "__main__":
-    for root, folders, files in os.walk("input/"):
+    if len(sys.argv) != 2:
+        print("Wrong input.")
+        exit()
+    projectPath = sys.argv[1:]
+
+    fastBasePath = "{}/.fast".format(projectPath[0])
+    fastPrioritizedSuitePath = "{}/src/test/java/fast".format(projectPath[0])
+    fastTestWatcherPath = '{}/src/test/resources/fast'.format(projectPath[0])
+    fastPrioritizedSuiteFilePath = "{}/FASTPrioritizedSuite.java".format(fastPrioritizedSuitePath)
+    fastTestWatcherFilePath = '{}/FASTTestWatcher.java'.format(fastTestWatcherPath)
+
+    for root, folders, files in os.walk("{}/.fast".format(projectPath[0])):
         for file in files:
-            if file[0] == ".":
-                pass
-            elif (file == "fault_matrix_key_tc.pickle" or
-                file == "fault_matrix.pickle"):
-                pass
-            elif ("-bbox.txt" in file or
-                  "-function.txt" in file or
-                  "-line.txt" in file or
-                  "-branch.txt" in file):
-                pass
-            else:
-                print "Deleting {}/{}".format(root, file)
-                os.remove("{}/{}".format(root, file))
+            print("Deleting {}/{}".format(root, file))
+            os.remove("{}/{}".format(root, file))
+
+    if os.path.exists(fastPrioritizedSuiteFilePath):
+        print("Deleting {}".format(fastPrioritizedSuiteFilePath))
+        os.remove(fastPrioritizedSuiteFilePath)
+
+        print("Deleting {}".format(fastPrioritizedSuitePath))
+        os.rmdir(fastPrioritizedSuitePath)
+
+    if os.path.exists(fastTestWatcherFilePath):
+        print("Deleting {}".format(fastTestWatcherFilePath))
+        os.remove(fastTestWatcherFilePath)
+
+        print("Deleting {}".format(fastTestWatcherPath))
+        os.rmdir(fastTestWatcherPath)
