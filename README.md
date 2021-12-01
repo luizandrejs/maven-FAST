@@ -1,80 +1,81 @@
-# FAST Approaches to Scalable Similarity-based Test Case Prioritization
+# FAST-parameterized
 
-This repository is a companion page for the following publication:
+This repository is a modification of the [FAST Approaches to Scalable Similarity-based Test Case Prioritization] project (https://github.com/icse18-FAST/FAST), it is based on the following publication:
 
 > Breno Miranda, Emilio Cruciani, Roberto Verdecchia, and Antonia Bertolino. 2018. FAST Approaches to Scalable Similarity-based Test Case Prioritization. In *Proceedings of ICSE’18: 40th International Conference on Software Engineering, Gothenburg, Sweden, May 27-June 3, 2018 (ICSE’18)*, 11 pages. DOI: [10.1145/3180155.3180210](http://dx.doi.org/10.1145/3180155.3180210)
 
-It contains all the material required for replicating our experiments, including: the implementation of the algorithms, the input data, and supplementary tools. 
-Some additional results, not included in the paper for the sake of space, are also provided.
+
+It contains materials needed to perform FAST project prioritization for projects developed using Java in conjunction with [Maven](https://maven.apache.org/)
 
 
-Experiment Results and Data
+Project Replication
 ---------------
-The results of our experiments as well as the data we used for our statistical analysis are available [here](results/README.md).
-
- 
-Experiment Replication
----------------
-In order to replicate the experiment follow these steps:
+In order to replicate the project follow these steps:
 
 ### Getting started
 
-1. Clone the repository 
+1. Clone the repository
    - `git clone https://github.com/DinoSaulo/FAST-parameterized`
- 
+
 2. Install the additional python packages required:
    - `pip3 install -r requirements.txt`
 
-### Evaluate the Effectiveness and Efficiency of different test case prioritization (TCP) algorithms
+### Perform prioritization with different FAST algorithms
 
 1. Execute the `prioritize.py` script
-   - `python3 py/prioritize.py <subject> <algorithm> <repetitions>`
+   - `python3 py/prioritize.py <subject> <algorithm>`
 
-      Example: `python3 py/prioritize.py /home/user/projects/truth FAST-pw 50`
+      Example: `python3 py/prioritize.py /home/user/projects/truth FAST-pw`
 
       The `<subject>` is the path to the project, some examples are: '/home/user/projects/truth' or '../my-projects/calculator'
 
-      The possible values for `<algorithm>` are: FAST-pw, FAST-one, FAST-log, FAST-sqrt, FAST-all, GT, GA, GA-S, ART-F, ART-D, STR, and I-TSD. Notice that while the FAST-* algorithms can be applied to both white-box and black-box TCP, GT, GA, GA-S, ART-F, and ART-D, are white-box only; STR and I-TSD are black-box only.
+      The possible values for `<algorithm>` are: FAST-pw, FAST-one, FAST-log, FAST-sqrt and FAST-all.
 
 2. View output results stored in folder `<subject>/.fast/output/`
 
-### Evaluate the Scalability of different TCP approaches
+3. Access the project repository
 
-1. Run the script  `generate-scalability-input.py` to generate the input testset for the algorithms
-   - `python tools/generate-scalability-input.py <test_suite_size> <test_case_size>`
+   Example: `cd /home/user/projects/truth`
 
-      The argument `<test_suite_size>` accepts any arbitrary integer, while `<test_case_size>` accepts three different sizes for a test case representation: *small*, *medium*, and *large*. *Small* for an average length of 100, *medium* for 1K, and *large* for 10K elements. In all three cases, we allow for a variance of ±25%.
+4. Run the project tests
 
-      For example, the command: `python tools/generate-scalability-input.py 1000 small` generates a test suite containing 1000 *small* test cases.
+   - `mvn test`
 
-      To display all argument options simply run the script without arguments (i.e. `python tools/generate-scalability-input.py`).
+### Project source code instrumentation (OPTIONAL)
+   When running the tests prioritized by the `FASTPrioritizedSuite.java` file, the report generated at runtime of the tests displayed by Maven is no longer displayed due to tool settings.
 
-2. Run the script `scalability.py` to measure the time required by the TCP approach to prioritize the target testset
-   - `python py/scalability.py <test_suite_size> <test_case_size> <algorithm>`
-   
-      For example, the command: `python py/scalability.py 1000 small FAST-pw` captures the time required by FAST-pw to prioritize a test suite containing 1000 small test cases. 
-   
-      To display all argument options simply run `python py/scalability.py`.
-   
-3. View output results stored in folder `scalability/output/`
- 
-### Plot the scalability results of our experiment execution
+   To make a workarround it is necessary to instrument the project by adding the file [FASTTestWatcher.java](tools/TestWatcher/FASTTestWatcher.java) to the project and adding the following lines to the project's test classes:
 
- 1. Run the script `plot-scalability-results.py`:
-    
-    - `python tools/plot-scalability-results.py <test_case_size> <time> <algorithm> ... <algorithm>`
+   ```java
+      import org.junit.jupiter.api.extension.ExtendWith;
+      import fast.FASTTestWatcher;
 
-      `<time>` accepts two values, either *prioritization* or *total*, based on the way the prioritization time is measured.
-   
-      Example: `python tools/plot-scalability-results.py small prioritization FAST-pw FAST-one FAST-log`
- 
-      To display all argument options simply run `python py/scalability.py`.
+      ...
+
+      @ExtendWith(FASTTestWatcher.class)
+   ```
+
+   #### Adding the instrumentation
+
+   To automatically add instrumentation to the project, just run the command
+    - `python3 tools/project-instrumentation.py <subject> add_instrumentation_to_the_project`
+
+   Example: `python3 tools/project-instrumentation.py /home/user/projects/truth add_instrumentation_to_the_project`
+
+   #### Removendo a instrumentação
+
+   To automatically remove instrumentation from the project, just run the command
+    - `python3 tools/project-instrumentation.py <subject> remove_instrumentation_from_the_project`
+
+   Example: `python3 tools/project-instrumentation.py /home/user/projects/truth remove_instrumentation_from_the_project`
 
 ### Clean preprocessed input files
 
- 1. Run the script `clean-preprocessed-input.py` to clean preprocessed input files for repeating the experiment in a clean environment.
- 
-    - `python tools/clean-preprocessed-input.py`
+ 1. Run the script `clean-preprocessed-input.py` to clean preprocessed input files for repeating the prioritization in a clean environment.
+
+    - `python3 tools/clean-preprocessed-input.py <subject>`
+
+   Example: `python3 tools/clean-preprocessed-input.py /home/user/projects/truth`
 
 
 Directory Structure
@@ -84,15 +85,6 @@ This is the root directory of the repository. The directory is structured as fol
     FAST
      .
      |
-     |--- input/         Input of the algorithms, i.e. fault matrix, coverage information, and BB representation of subjects.
+     |--- py/            Implementation of the algorithms and scripts to execute the project.
      |
-     |--- output/        Raw output data of the experiments execution.
-     |
-     |--- py/            Implementation of the algorithms and scripts to execute the experiments.
-     |
-     |--- results/       Overview of the experiment results and related data
-     |
-     |--- scalability/   Input, output, and plots for the scalability experiment.
-     |
-     |--- tools/         Util scripts, e.g. clean environment, plot results, generate scalability input.
-  
+     |--- tools/         Util scripts, e.g. clean environment, project instrumentation.
