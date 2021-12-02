@@ -12,13 +12,25 @@ Project Replication
 ---------------
 In order to replicate the project follow these steps:
 
+### Prerequisites
+
+1. Have git installed - [Download](https://git-scm.com/downloads)
+
+2. Have Python version 3 installed - [Download](https://www.python.org/downloads/)
+
+3. Have the pip installed - [How to install pip](https://pip.pypa.io/en/stable/cli/pip_install/)
+
 ### Getting started
 
 1. Clone the repository
-   - `git clone https://github.com/DinoSaulo/FAST-parameterized`
+   ```bash
+   git clone https://github.com/DinoSaulo/FAST-parameterized
+   ```
 
 2. Install the additional python packages required:
-   - `pip3 install -r requirements.txt`
+   ```bash
+   pip3 install -r requirements.txt
+   ```
 
 ### Perform prioritization with different FAST algorithms
 
