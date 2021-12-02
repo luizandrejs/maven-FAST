@@ -26,7 +26,6 @@ import re
 import glob
 
 import fast
-import metric
 
 from tools.FASTWatchdog import checkIfFilesHaveBeenModified, checkDeletedFile
 
@@ -46,10 +45,6 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
 
     inpath = "{}/.fast/input/".format(projectPath)
     fin = "{}/{}-{}.txt".format(inpath, prog, ctype)
-    #if javaFlag:
-    #    fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
-    #else:
-    #    fault_matrix = "input/{}_{}/fault_matrix_key_tc.pickle".format(prog, v)
     outpath = "{}/.fast/output/".format(projectPath)
     ppath = outpath + "prioritized/"
 
@@ -68,16 +63,10 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                     fin, selsize, r=r, b=b, bbox=True, k=k, memory=True)
             writePrioritization(ppath, name, ctype, run, prioritization)
             writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
-            #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-            #apfds.append(apfd)
             stimes.append(stime)
             ptimes.append(ptime)
             print("  Progress: 100%  ")
             print("  Running time:", stime + ptime)
-            #if javaFlag:
-            #    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-            #else:
-                #print("  APFD:", apfd)
         rep = (name, stimes, ptimes, apfds)
         writeOutput(outpath, ctype, rep, javaFlag)
         print("")
@@ -95,16 +84,10 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
                     fin, r, b, bbox=True, k=k, memory=True)
             writePrioritization(ppath, name, ctype, run, prioritization)
             writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
-            #apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-            #apfds.append(apfd)
             stimes.append(stime)
             ptimes.append(ptime)
             print("  Progress: 100%  ")
             print("  Running time:", stime + ptime)
-            #if javaFlag:
-                #print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-            #else:
-                #print("  APFD:", apfd)
         rep = (name, stimes, ptimes, apfds)
         writeOutput(outpath, ctype, rep, javaFlag)
         print("")
@@ -113,79 +96,6 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
         print("Wrong input.")
         print(usage)
         exit()
-
-
-def wboxPrioritization(name, prog, v, ctype, n, r, b, repeats, selsize):
-    javaFlag = True if v == "v0" else False
-
-    fin = "input/{}_{}/{}-{}.txt".format(prog, v, prog, ctype)
-    if javaFlag:
-        fault_matrix = "input/{}_{}/fault_matrix.pickle".format(prog, v)
-    else:
-        fault_matrix = "input/{}_{}/fault_matrix_key_tc.pickle".format(prog, v)
-
-    outpath = "output/{}_{}/".format(prog, v)
-    ppath = outpath + "prioritized/"
-
-    if name == "FAST-" + selsize.__name__[:-1]:
-        if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
-            ptimes, stimes, apfds = [], [], []
-            for run in range(repeats):
-                print(" Run", run)
-                if javaFlag:
-                    stime, ptime, prioritization = fast.fast_(
-                        fin, selsize, r=r, b=b, memory=False)
-                else:
-                    stime, ptime, prioritization = fast.fast_(
-                        fin, selsize, r=r, b=b, memory=True)
-                writePrioritization(ppath, name, ctype, run, prioritization)
-                apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                apfds.append(apfd)
-                stimes.append(stime)
-                ptimes.append(ptime)
-                print("  Progress: 100%  ")
-                print("  Running time:", stime + ptime)
-                if javaFlag:
-                    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                else:
-                    print("  APFD:", apfd)
-            rep = (name, stimes, ptimes, apfds)
-            writeOutput(outpath, ctype, rep, javaFlag)
-            print("")
-        else:
-            print(name, "already run.")
-
-    elif name == "FAST-pw":
-        if ("{}-{}.tsv".format(name, ctype)) not in set(os.listdir(outpath)):
-            ptimes, stimes, apfds = [], [], []
-            for run in range(repeats):
-                print(" Run", run)
-                if javaFlag:
-                    stime, ptime, prioritization = fast.fast_pw(fin, r, b)
-                else:
-                    stime, ptime, prioritization = fast.fast_pw(
-                        fin, r, b, memory=True)
-                writePrioritization(ppath, name, ctype, run, prioritization)
-                apfd = metric.apfd(prioritization, fault_matrix, javaFlag)
-                apfds.append(apfd)
-                stimes.append(stime)
-                ptimes.append(ptime)
-                print("  Progress: 100%  ")
-                print("  Running time:", stime + ptime)
-                if javaFlag:
-                    print("  APFD:", sum(apfds[run]) / len(apfds[run]))
-                else:
-                    print("  APFD:", apfd)
-            rep = (name, stimes, ptimes, apfds)
-            writeOutput(outpath, ctype, rep, javaFlag)
-            print("")
-        else:
-            print(name, "already run.")
-    else:
-        print("Wrong input.")
-        print(usage)
-        exit()
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -384,19 +294,14 @@ if __name__ == "__main__":
         def pw(x): pass
         selsize = pw
 
-    if entity == "bbox":
-
-        if checkIfFilesHaveBeenModified(projectPath):
-            resetFastPaths(projectPath)
-            parameterizer(projectPath, entity)
-            bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
-        elif checkDeletedFile(projectPath):
-            resetFastPaths(projectPath)
-            parameterizer(projectPath, entity)
-            bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
-        else:
-            print('No modifications were found in the project tests')
-
+    if checkIfFilesHaveBeenModified(projectPath):
+        resetFastPaths(projectPath)
+        parameterizer(projectPath, entity)
+        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+    elif checkDeletedFile(projectPath):
+        resetFastPaths(projectPath)
+        parameterizer(projectPath, entity)
+        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
     else:
-        prog = getProjectName(projectPath)
-        wboxPrioritization(algname, prog, v, entity, n, r, b, repeats, selsize)
+        print('No modifications were found in the project tests')
+
