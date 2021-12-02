@@ -196,7 +196,8 @@ def resetFastPaths(projectPath):
 
     #base path
     fastPath = projectPath+"/.fast"
-    shutil.rmtree("{}".format(fastPath))
+    if os.path.exists(fastPath):
+        shutil.rmtree(fastPath)
     createFolderIfNotExists(fastPath)
 
     #input
