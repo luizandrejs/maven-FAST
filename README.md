@@ -31,7 +31,54 @@ In order to replicate the project follow these steps:
 
       The possible values for `<algorithm>` are: FAST-pw, FAST-one, FAST-log, FAST-sqrt and FAST-all.
 
-2. View output results stored in folder `<subject>/.fast/output/`
+   - To view output results access the folder `<subject>/.fast/output/`
+
+   - To see the generated Java prioritization file (FASTPrioritizedSuite.java) access the folder `<subject>/src/test/java/fast`
+
+2. Add the following snippets to the Maven project `pon.xml` file
+
+   ```xml
+   <build>
+   ...
+      <plugins>
+         ...
+         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.19.1</version>
+            <configuration>
+               <includes>
+                  <include>**/FASTPrioritizedSuite.java</include>
+               </includes>
+            </configuration>
+         </plugin>
+         ...
+      </plugins>
+   ...
+   </build>
+   ```
+
+   ```xml
+   </dependencies>
+      ...
+      <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
+      <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter</artifactId>
+         <version>5.8.1</version>
+         <scope>test</scope>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
+      <dependency>
+         <groupId>org.junit.platform</groupId>
+         <artifactId>junit-platform-runner</artifactId>
+         <version>1.5.2</version>
+         <scope>test</scope>
+      </dependency>
+      ...
+   </dependencies>
+   ```
 
 3. Access the project repository
 
