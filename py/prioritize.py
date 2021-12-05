@@ -54,7 +54,7 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
 
         ptimes, stimes, apfds = [], [], []
         for run in range(repeats):
-            print(" Run", run)
+            print("Starting test case priorization")
             if javaFlag:
                 stime, ptime, prioritization = fast.fast_(
                     fin, selsize, r=r, b=b, bbox=True, k=k, memory=False)
@@ -65,17 +65,17 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
             writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
             stimes.append(stime)
             ptimes.append(ptime)
-            print("  Progress: 100%  ")
-            print("  Running time:", stime + ptime)
+            print("Test case prioritization completed")
+            print("Running time:", stime + ptime)
         rep = (name, stimes, ptimes, apfds)
         writeOutput(outpath, ctype, rep, javaFlag)
-        print("")
+        #print("")
 
     elif name == "FAST-pw":
 
         ptimes, stimes, apfds = [], [], []
         for run in range(repeats):
-            print(" Run", run)
+            print("Starting test case priorization")
             if javaFlag:
                 stime, ptime, prioritization = fast.fast_pw(
                     fin, r, b, bbox=True, k=k, memory=False)
@@ -86,11 +86,11 @@ def bboxPrioritization(name, projectPath, v, ctype, k, n, r, b, repeats, selsize
             writePrioritizationFiles(inpath, ppath, name, ctype, run, prioritization)
             stimes.append(stime)
             ptimes.append(ptime)
-            print("  Progress: 100%  ")
-            print("  Running time:", stime + ptime)
+            print("Test case prioritization completed")
+            print("Running time:", stime + ptime)
         rep = (name, stimes, ptimes, apfds)
         writeOutput(outpath, ctype, rep, javaFlag)
-        print("")
+        #print("")
 
     else:
         print("Wrong input.")
