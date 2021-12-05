@@ -238,18 +238,24 @@ def parameterizer(projectPath, entity):
 
     arr = arr1 + arr2 + arr3 + arr4
 
-    for fileTest in arr:
+    if arr == []:
+        return False
+    else:
 
-        f = open(fileTest, "r")
+        for fileTest in arr:
 
-        code = codeFormat(f.read()) + '\n'
+            f = open(fileTest, "r")
 
-        append_write = defineAppendWrite(fileName)
-        openAndWriteInFile(fileName, append_write, code)
+            code = codeFormat(f.read()) + '\n'
 
-        append_write = defineAppendWrite(indexTestFilesPaths)
-        testFile = os.path.relpath(fileTest, projectPath) + '\n'
-        openAndWriteInFile(indexTestFilesPaths, append_write, testFile)
+            append_write = defineAppendWrite(fileName)
+            openAndWriteInFile(fileName, append_write, code)
+
+            append_write = defineAppendWrite(indexTestFilesPaths)
+            testFile = os.path.relpath(fileTest, projectPath) + '\n'
+            openAndWriteInFile(indexTestFilesPaths, append_write, testFile)
+
+        return True
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -297,12 +303,18 @@ if __name__ == "__main__":
 
     if checkIfFilesHaveBeenModified(projectPath):
         resetFastPaths(projectPath)
-        parameterizer(projectPath, entity)
-        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        findTestFiles = parameterizer(projectPath, entity)
+        if findTestFiles:
+            bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        else:
+            print("No test files found in the project")
     elif checkDeletedFile(projectPath):
         resetFastPaths(projectPath)
-        parameterizer(projectPath, entity)
-        bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        findTestFiles = parameterizer(projectPath, entity)
+        if findTestFiles:
+            bboxPrioritization(algname, projectPath, v, entity, k, n, r, b, repeats, selsize)
+        else:
+            print("No test files found in the project")
     else:
         print('No modifications were found in the project tests')
 
