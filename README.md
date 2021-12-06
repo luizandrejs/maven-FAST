@@ -130,11 +130,11 @@ In order to replicate the project follow these steps:
 
 ### Clean preprocessed input files
 
- 1. Run the script `clean-preprocessed-input.py` to clean preprocessed input files for repeating the prioritization in a clean environment.
+ 1. Run the script `clean-project.py` to clean preprocessed input files for repeating the prioritization in a clean environment.
 
-    - `python3 tools/clean-preprocessed-input.py <subject>`
+    - `python3 tools/clean-project.py <subject>`
 
-   Example: `python3 tools/clean-preprocessed-input.py /home/user/projects/truth`
+   Example: `python3 tools/clean-project.py /home/user/projects/truth`
 
 
 Directory Structure
