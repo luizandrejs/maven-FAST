@@ -130,7 +130,7 @@ In order to replicate the project follow these steps:
 
 ### Clean preprocessed input files
 
- 1. Run the script `clean-project.py` to clean preprocessed input files for repeating the prioritization in a clean environment.
+ 1. Run the script [clean-project.py](/tools/clean-project.py) to clean the environment.
 
     - `python3 tools/clean-project.py <subject>`
 
