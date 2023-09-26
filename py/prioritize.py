@@ -123,11 +123,11 @@ def writePrioritizationFiles(inputPath, prioritizedPath, name, ctype, run, prior
 
 def createPriorizationFile(prioritizedPath, projectName, ctype, run):
 
-    header = '''package fast;\n\nimport org.junit.platform.runner.JUnitPlatform;\nimport org.junit.platform.suite.api.SelectClasses;\nimport org.junit.runner.RunWith;\n\n'''
+    header = '''package fast;\n\nimport org.junit.runner.RunWith;\nimport org.junit.runners.Suite;\n\n'''
 
-    midle = '''\n@RunWith(JUnitPlatform.class)\n@SelectClasses({\n'''
+    midle = '''\n@RunWith(Suite.class)\n@Suite.SuiteClasses({\n'''
 
-    footer = '''})\nclass FASTPrioritizedSuite{}'''
+    footer = '''})\npublic class FASTPrioritizedSuite{}'''
 
     fastTestPackage = '{}/../../../src/test/java/fast'.format(prioritizedPath)
 
